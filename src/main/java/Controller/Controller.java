@@ -24,6 +24,7 @@ public class Controller {
         while(model.isRunning()){
             long now = System.nanoTime();
             model.update(deltaT);
+            view.render(model);
             after = System.nanoTime();
             deltaT = Math.abs(after - now);
         }
