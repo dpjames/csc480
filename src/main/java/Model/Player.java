@@ -12,8 +12,6 @@ public class Player implements GameObject{
     public void update(double deltaT) {
         px+=.5 * ax * deltaT * deltaT + vx * deltaT;
         py+=.5 * ay * deltaT * deltaT + vy * deltaT;
-
-        System.out.println(px + "," + py);
     }
 
     @Override

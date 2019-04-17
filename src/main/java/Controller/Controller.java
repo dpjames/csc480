@@ -22,12 +22,10 @@ public class Controller {
         long after = System.nanoTime();
         while(model.isRunning()){
             long now = System.nanoTime();
-            System.out.println("update");
             long deltaT = Math.abs(after - now);
-            model.update(deltaT);
-            System.out.println("draw");
-            view.render(model); //Might multithread this later.
             after = System.nanoTime();
+            model.update(deltaT);
+            view.render(model); //Might multithread this later.
         }
     }
 }

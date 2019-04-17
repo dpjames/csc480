@@ -34,11 +34,6 @@ public class Model {
         for(GameObject o : gameObs){
             o.update(seconds);
         }
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
     }
 
     public ArrayList<GameObject> getGameObjects() {
