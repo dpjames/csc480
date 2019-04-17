@@ -4,8 +4,8 @@ public class Player implements GameObject{
     private double vx, vy, ax, ay, px, py; //velocity, acceleration, position;
 
     public Player(){
-        this.ax = 1;
-        this.ay = -1;
+        this.vx = 1;
+        this.vy = -1;
     }
 
     @Override

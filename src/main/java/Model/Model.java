@@ -30,7 +30,6 @@ public class Model {
 
     public void update(long deltaT) {
         double seconds = deltaT/1000000000.0;
-        System.out.println(seconds);
         for(GameObject o : gameObs){
             o.update(seconds);
         }

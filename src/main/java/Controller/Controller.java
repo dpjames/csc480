@@ -20,12 +20,12 @@ public class Controller {
     }
     public void gameLoop(){
         long after = System.nanoTime();
+        long deltaT = 0;
         while(model.isRunning()){
             long now = System.nanoTime();
-            long deltaT = Math.abs(after - now);
-            after = System.nanoTime();
             model.update(deltaT);
-            view.render(model); //Might multithread this later.
+            after = System.nanoTime();
+            deltaT = Math.abs(after - now);
         }
     }
 }
