@@ -19,12 +19,11 @@ public class Controller {
             // have view dispatch the game loop.
     }
     public void gameLoop(){
-        long after = System.nanoTime();
+        long after;
         long deltaT = 0;
         while(model.isRunning()){
             long now = System.nanoTime();
             model.update(deltaT);
-            view.render(model);
             after = System.nanoTime();
             deltaT = Math.abs(after - now);
         }

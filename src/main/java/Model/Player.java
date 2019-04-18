@@ -1,11 +1,15 @@
 package Model;
 
+import java.awt.*;
+
 public class Player implements GameObject{
     private double vx, vy, ax, ay, px, py; //velocity, acceleration, position;
+    private static int WIDTH = 20;
+    private static int HEIGHT = 20;
 
     public Player(){
-        this.vx = 1;
-        this.vy = -1;
+        this.vx = 100;
+        this.vy = 100;
     }
 
     @Override
@@ -15,7 +19,8 @@ public class Player implements GameObject{
     }
 
     @Override
-    public void render() {
-
+    public void render(Graphics g) {
+        g.setColor(Color.GREEN);
+        g.fillRect((int)px,(int)py,WIDTH,HEIGHT);
     }
 }

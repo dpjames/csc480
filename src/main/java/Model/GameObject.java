@@ -1,6 +1,8 @@
 package Model;
 
+import java.awt.*;
+
 public interface GameObject {
     void update(double deltaT);
-    void render();
+    void render(Graphics g);
 }
