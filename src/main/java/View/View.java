@@ -1,44 +1,37 @@
 package View;
 
+import Controller.GUIInputHandler;
 import Model.Model;
 import Model.GameObject;
+import Model.Constants;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+
 public class View {
     private static final String TITLE = "A very COOL title";
-    private static final int WIDTH = 1000;
-    private static final int HEIGHT = 1000;
     private JFrame window;
     private DrawingBoard canvas;
     private Model model;
+    private GUIInputHandler inputHandler;
     public View(Model m){
         System.out.println("init view");
         this.model = m;
         window = new JFrame(TITLE);
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);
         canvas = new DrawingBoard();
-        window.setSize(WIDTH, HEIGHT);
-        canvas.setSize(WIDTH, HEIGHT);
+
+        //canvas.setSize((int) Constants.WORLD_WIDTH, (int) Constants.WORLD_HEIGHT);
+
         window.setLayout(new BorderLayout());
+        window.setResizable(false);
         window.add("Center", canvas);
-        //try {
-        //    Thread.sleep(2000);
-        //} catch (InterruptedException e) {
-        //    e.printStackTrace();
-        //}
-        Timer drawTime = new Timer(1, canvas);
+        inputHandler = new GUIInputHandler(canvas, m);
+        window.pack();
+        Timer drawTime = new Timer(0, canvas);
         drawTime.start();
-    }
-
-
-    public void render(Model model) {
-        //need to generate graphics and such here.
-        //chances are this will be replaced with a "draw" or "update" function when this class is extended.
-        canvas.repaint();
-        for(GameObject o : model.getGameObjects()){
-        }
     }
 
 
@@ -46,9 +39,8 @@ public class View {
         @Override
         public void paintComponent(Graphics g){
             super.paintComponent(g);
-            System.out.println("update!");
             g.setColor(Color.BLUE);
-            g.fillRect(0,0,WIDTH,HEIGHT);
+            g.fillRect(0,0,(int)Constants.WORLD_WIDTH,(int)Constants.WORLD_HEIGHT);
             for(GameObject o : model.getGameObjects()){
                 o.render(g);
             }
@@ -57,6 +49,10 @@ public class View {
         @Override
         public void actionPerformed(ActionEvent actionEvent) {
             repaint();
+        }
+        @Override
+        public Dimension getPreferredSize(){
+            return new Dimension((int)Constants.WORLD_WIDTH,(int)Constants.WORLD_HEIGHT);
         }
     }
 }

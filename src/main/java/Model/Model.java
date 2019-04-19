@@ -6,15 +6,15 @@ public class Model {
     private double EPSILON = .00001;
     private boolean gameOpen = true;
     private boolean running = true;
-    private ArrayList<GameObject> gameObs;
+    private GameObjectArrayList gameObs;
 
 
     public Model(){
         createGameObs();
     }
     private void createGameObs(){
-        gameObs = new ArrayList<>();
-        gameObs.add(new Player());
+        gameObs = new GameObjectArrayList();
+        gameObs.setPlayer(new Player());
     }
 
     public boolean gameIsOpen() {
@@ -37,5 +37,9 @@ public class Model {
 
     public ArrayList<GameObject> getGameObjects() {
         return gameObs;
+    }
+
+    public void movePlayer(double vx, double vy) {
+        this.gameObs.getPlayer().modifyVelocity(vx,vy);
     }
 }
