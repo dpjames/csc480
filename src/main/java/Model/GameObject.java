@@ -27,4 +27,17 @@ public class GameObject {
         g.setColor(this.color);
         g.fillRect((int)px,(int)py,width,height);
     }
+    public boolean collides(GameObject other){
+        double[][] me = {
+                {this.px, this.py},
+                {this.px + this.width, this.py + this.height}
+        };
+        double[][] them = {
+                {other.px, other.py},
+                {other.px + other.width, other.py + other.height}
+        };
+        //(other[0][0] > me[1][0]) || (other[0][1] > me[1][1]) ||
+        return false;
+    }
+
 }

@@ -13,8 +13,12 @@ public class Player extends GameObject{
     @Override
     public void update(double deltaT) {
         super.update(deltaT);
-        if(py + height > Constants.WORLD_HEIGHT || py < 0){
-            //py = 0;
+        if(py + height > Constants.WORLD_HEIGHT){
+            py = Constants.WORLD_HEIGHT - height;
+            vy*=-1;
+        }
+        if(py < 0) {
+            py = 0;
             vy*=-1;
         }
         if(px + width > Constants.WORLD_WIDTH || px < 0){

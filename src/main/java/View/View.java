@@ -30,11 +30,12 @@ public class View {
         window.add("Center", canvas);
         inputHandler = new GUIInputHandler(canvas, m);
         window.pack();
-        Timer drawTime = new Timer(0, canvas);
+        Timer drawTime = new Timer(1, canvas);
         drawTime.start();
     }
-
-
+    public void render(){
+        canvas.repaint();
+    }
     private class DrawingBoard extends JPanel implements ActionListener{
         @Override
         public void paintComponent(Graphics g){
