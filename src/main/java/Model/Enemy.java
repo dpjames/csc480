@@ -34,4 +34,5 @@ public class Enemy extends GameObject {
     private boolean checkInBounds(){
         return (this.px > 0 && this.px + this.width < Constants.WORLD_WIDTH) && (this.py > 0 && this.py + width < Constants.WORLD_HEIGHT);
     }
+
 }

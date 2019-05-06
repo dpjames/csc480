@@ -23,7 +23,7 @@ public class Controller {
         long deltaT = 0;
         while(model.isRunning()){
             long now = System.nanoTime();
-            //model.update(deltaT);
+            model.update(deltaT);
             //try {
             //    Thread.sleep(1);
             //} catch (InterruptedException e) {
