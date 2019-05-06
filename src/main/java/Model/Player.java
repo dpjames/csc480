@@ -4,8 +4,8 @@ import java.awt.*;
 
 public class Player extends GameObject{
     public Player(){
-        this.ay = 9.8;
-        this.ax = -10;
+        this.ay = 0;
+        this.ax = 0;
         this.px = 10;
         this.py = 10;
         this.color = Color.YELLOW;

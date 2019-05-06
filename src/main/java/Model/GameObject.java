@@ -6,12 +6,12 @@ public class GameObject {
     protected static float WORLD_TO_PIXEL_SCALE = 50;
     protected double vx = 0;
     protected double vy = 0;
-    protected double ax = -10;
-    protected double ay = 9.8;
+    protected double ax = 0;
+    protected double ay = 0;
     protected double px = 0;
     protected double py = 0; //velocity, acceleration, position;
-    protected int width = 100;
-    protected int height = 100;
+    protected int width = 10;
+    protected int height = 10;
     protected Color color = Color.RED;
     public GameObject(){
         px = Math.random() * Constants.WORLD_WIDTH + Constants.WORLD_WIDTH;
