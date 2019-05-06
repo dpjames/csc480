@@ -36,8 +36,17 @@ public class GameObject {
                 {other.px, other.py},
                 {other.px + other.width, other.py + other.height}
         };
-        //(other[0][0] > me[1][0]) || (other[0][1] > me[1][1]) ||
-        return false;
+        if(me[0][0] > them[1][0] || them[0][0] > me[1][0]){
+            return false;
+        }
+        if(me[0][1] > them[1][1] || them[0][1] > me[1][1]){
+            return false;
+        }
+        return true;
     }
+    boolean checkInBounds(){
+        return (this.px > 0 && this.px + this.width < Constants.WORLD_WIDTH) && (this.py > 0 && this.py + width < Constants.WORLD_HEIGHT);
+    }
+
 
 }

@@ -14,7 +14,7 @@ public class Model {
     }
     private void createGameObs(){
         gameObs = new GameObjectArrayList();
-        gameObs.setPlayer(new Player());
+        gameObs.setPlayer(new Player(gameObs));
         gameObs.generateRandom(5);
     }
 
