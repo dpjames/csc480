@@ -11,6 +11,7 @@ import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
+import org.nd4j.linalg.factory.NDArrayFactory;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
@@ -23,10 +24,11 @@ import java.util.*;
 
 public class AIInputHandler extends InputHandler{
     private MultiLayerNetwork dmodel;
+
     public AIInputHandler(Model m) {
         this.model = m;
         int seed = 123;
-        int numInputs = 1;
+        int numInputs = 2;
         int numOutputs = 4;
         int numHiddenNodes = 20;
         double learningRate = .01;
@@ -61,9 +63,24 @@ public class AIInputHandler extends InputHandler{
     }
     public void update(ArrayList<Enemy> enemies){
 
-        dmodel.fit(buildState(enemies));
+        INDArray output = (dmodel.output(buildInput(enemies)[0]));
+        //for(int i = 0; i < 10; i++){
+        //    System.out.print(output.getRow(i).getFloat(0));
+        //    System.out.print(output.getRow(i).getFloat(1));
+        //    System.out.print(output.getRow(i).getFloat(2));
+        //    System.out.print(output.getRow(i).getFloat(3));
+        //    System.out.print("||");
+        //}
+        //System.out.println();
+
         //evaluate and move here
-        int dir = (int)(Math.random() * 4);
+        int max = 0;
+        for(int i = 0; i < 4; i++) {
+            if (output.getRow(0).getFloat(i) > output.getRow(max).getFloat(max)){
+                max = i;
+            }
+        }
+        int dir = max;
         switch(dir){
             case(0):
                 movePlayer(VELOCITY * 2, 0);
@@ -81,15 +98,25 @@ public class AIInputHandler extends InputHandler{
 
     }
 
-    private DataSet buildState(ArrayList<Enemy> enemies) {
+    private INDArray[] buildInput(ArrayList<Enemy> enemies) {
         double[][] pos = new double[enemies.size()][2];
+        int[][] lab = new int[enemies.size()][4];
         for(int i = 0; i < enemies.size(); i++){
             double[] cpos = enemies.get(i).getPosition();
             pos[i] = cpos;
+            int[] label = {0,0,0,0};
+            label[(int)(Math.random() * 4)] = 1;
+            lab[i] = label;
         }
         INDArray features = Nd4j.createFromArray(pos);
-        INDArray labels = null;
-        DataSet alldata = new DataSet(features, labels);
+        INDArray labels = Nd4j.createFromArray(lab);
+        return new INDArray[]{features,labels};
+    }
+
+    private DataSet buildState(ArrayList<Enemy> enemies) {
+        INDArray[] data = buildInput(enemies);
+        DataSet alldata = new DataSet(data[0], data[1]);
+        //dmodel.fit(alldata);
         return alldata;
     }
 }
