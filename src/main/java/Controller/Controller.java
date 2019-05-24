@@ -42,8 +42,11 @@ public class Controller {
                 after = System.nanoTime();
                 deltaT = Math.abs(after - now);
                 if (inputhandle != null) {
-                    inputhandle.update(model.getEnemies());
+                    inputhandle.update(model.getEnemies(), model.getPlayerPosition());
                 }
+            }
+            if(inputhandle != null){
+                inputhandle.evaluate();
             }
         }
         //System.out.println(model.getScore());

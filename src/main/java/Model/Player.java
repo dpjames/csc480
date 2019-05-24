@@ -65,4 +65,8 @@ public class Player extends GameObject{
     public double getWidth() {
         return this.width;
     }
+
+    public double[] getPosition() {
+        return new double[]{px, py};
+    }
 }

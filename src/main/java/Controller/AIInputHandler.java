@@ -8,6 +8,7 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
+import org.nd4j.evaluation.classification.Evaluation;
 import org.nd4j.linalg.activations.Activation;
 import org.nd4j.linalg.api.iter.INDArrayIterator;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -29,13 +30,13 @@ public class AIInputHandler extends InputHandler{
     public AIInputHandler(Model m) {
         this.model = m;
         int seed = 123;
-        int numInputs = 2;
+        int numInputs = m.getGameObjects().size() * 2;
         int numOutputs = 4;
-        int numHiddenNodes = 20;
+        int numHiddenNodes = 1000;
         double learningRate = .01;
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .weightInit(WeightInit.XAVIER)
-                .updater(new Nesterovs(learningRate, 0.9))
+                //.updater(new Nesterovs(learningRate, 0.9))
                 .list()
                 .layer(new DenseLayer.Builder().nIn(numInputs).nOut(numHiddenNodes)
                         .activation(Activation.RELU)
@@ -62,39 +63,46 @@ public class AIInputHandler extends InputHandler{
         //}
 
     }
-    public void update(ArrayList<Enemy> enemies){
-        int row = (int)(Math.random() * enemies.size());
+    public void update(ArrayList<Enemy> enemies, double[] ppos){
+        //int row = (int)(Math.random() * enemies.size());
 
-        INDArray output = (dmodel.output(buildInput(enemies)[0]));
-        //for(int i = 0; i < 10; i++){
-        //    System.out.print(output.getRow(i).getFloat(0));
-        //    System.out.print(output.getRow(i).getFloat(1));
-        //    System.out.print(output.getRow(i).getFloat(2));
-        //    System.out.print(output.getRow(i).getFloat(3));
-        //    System.out.print("||");
-        //}
-        //System.out.println();
+        INDArray output = (dmodel.output(buildInput(enemies, ppos)[0]));
         dmodel.fit(buildState(enemies));
-
         //evaluate and move here
-
         int max = 0;
         double[] avg = {0,0,0,0};
         for(int i = 0; i < enemies.size(); i++) {
-            avg[0]+=output.getRow(i).getFloat(0);
-            avg[1]+=output.getRow(i).getFloat(1);
-            avg[2]+=output.getRow(i).getFloat(2);
-            avg[3]+=output.getRow(i).getFloat(3);
+            double a,b,c,d;
+            a =output.getRow(0).getDouble(0);
+            b =output.getRow(0).getDouble(1);
+            c =output.getRow(0).getDouble(2);
+            d =output.getRow(0).getDouble(3);
+            if(Double.isNaN(a)){
+                a = output.getRow(0).getInt(0);
+                b = output.getRow(0).getInt(1);
+                c = output.getRow(0).getInt(2);
+                d = output.getRow(0).getInt(3);
+            }
+            avg[0]+=a;
+            avg[1]+=b;
+            avg[2]+=c;
+            avg[3]+=d;
         }
         avg[0]/=enemies.size();
         avg[1]/=enemies.size();
         avg[2]/=enemies.size();
         avg[3]/=enemies.size();
         for(int i = 0; i < 4; i++) {
-            if (output.getRow(row).getFloat(i) > output.getRow(row).getFloat(max)){
+            if (avg[i] > avg[max]){
                 max = i;
             }
         }
+
+        //System.out.print(output.getRow(row).getDouble(0));
+        //System.out.print(" " + output.getRow(row).getDouble(1));
+        //System.out.print(" " + output.getRow(row).getDouble(2));
+        //System.out.print(" " + output.getRow(row).getDouble(3));
+        //System.out.println();
         int dir = max;
         switch(dir){
             case(0):
@@ -113,24 +121,35 @@ public class AIInputHandler extends InputHandler{
 
     }
 
-    private INDArray[] buildInput(ArrayList<Enemy> enemies) {
-        double[][] pos = new double[enemies.size()][2];
-        int[][] lab = new int[enemies.size()][4];
-        for(int i = 0; i < enemies.size(); i++){
+    private INDArray[] buildInput(ArrayList<Enemy> enemies, double[] ppos) {
+        double[][] pos = new double[1][enemies.size() * 2 + 2];
+        int[][] lab = new int[1][4];
+        for(int i = 0; i < enemies.size(); i+=2){
             double[] cpos = enemies.get(i).getPosition();
-            pos[i] = cpos;
-            int[] label = {0,0,0,0};
-            label[(int)(Math.random() * 4)] = 1; //change this
-            lab[i] = label;
+            pos[0][i + 0] = cpos[0];
+            pos[0][i + 1] = cpos[1];
+            //int[] label = {0,0,0,0};
+            //label[(int)(Math.random() * 4)] = 1; //change this
         }
+        lab[0][0] = 0;
+        lab[0][1] = 0;
+        lab[0][2] = 0;
+        lab[0][3] = 0;
+        lab[0][(int)(Math.random() * 4)] = 1;
+        pos[0][enemies.size()] = ppos[0];
+        pos[0][enemies.size()] = ppos[1];
         INDArray features = Nd4j.createFromArray(pos);
         INDArray labels = Nd4j.createFromArray(lab);
         return new INDArray[]{features,labels};
     }
 
     private DataSet buildState(ArrayList<Enemy> enemies) {
-        INDArray[] data = buildInput(enemies);
+        INDArray[] data = buildInput(enemies, model.getPlayerPosition());
         DataSet alldata = new DataSet(data[0], data[1]);
         return alldata;
+    }
+
+    public void evaluate() {
+        double score = model.getScore();
     }
 }

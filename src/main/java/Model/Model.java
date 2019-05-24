@@ -16,7 +16,7 @@ public class Model {
     private void createGameObs(){
         gameObs = new GameObjectArrayList();
         gameObs.setPlayer(new Player(gameObs));
-        gameObs.generateRandom(15);
+        gameObs.generateRandom(10);
     }
 
     public boolean gameIsOpen() {
@@ -38,7 +38,7 @@ public class Model {
         if(gameObs.getPlayer().isDead()){
             this.running = false;
         }
-        score+=(seconds * 10/  gameObs.getPlayer().getWidth());
+        score+=(seconds * 1000/  gameObs.getPlayer().getWidth());
     }
 
     public ArrayList<GameObject> getGameObjects() {
@@ -62,5 +62,9 @@ public class Model {
         score = 0;
         Enemy.reset();
         createGameObs();
+    }
+
+    public double[] getPlayerPosition() {
+        return gameObs.getPlayer().getPosition();
     }
 }
