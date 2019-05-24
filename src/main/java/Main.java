@@ -36,6 +36,7 @@ public class Main {
         Model m = new Model();
         View v = new View(m);
         Controller c = new Controller(m, null, new AIInputHandler(m));
+        //Controller c = new Controller(m, v);
         c.gameLoop();
 
     }

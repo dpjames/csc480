@@ -38,7 +38,7 @@ public class Model {
         if(gameObs.getPlayer().isDead()){
             this.running = false;
         }
-        score+=(seconds/100 *  gameObs.getPlayer().getWidth());
+        score+=(seconds * 10/  gameObs.getPlayer().getWidth());
     }
 
     public ArrayList<GameObject> getGameObjects() {
@@ -54,5 +54,13 @@ public class Model {
 
     public ArrayList<Enemy> getEnemies() {
         return gameObs.getEnemies();
+    }
+
+
+    public void reset() {
+        running = true;
+        score = 0;
+        Enemy.reset();
+        createGameObs();
     }
 }

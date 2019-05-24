@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class Player extends GameObject{
     private GameObjectArrayList gameObs;
-    private double MAXSPEED = 100;
+    private double MAXSPEED = 10;
     private boolean dead;
 
     public Player(GameObjectArrayList gameObs){

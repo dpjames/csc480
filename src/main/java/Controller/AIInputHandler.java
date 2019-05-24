@@ -9,6 +9,7 @@ import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.deeplearning4j.optimize.listeners.ScoreIterationListener;
 import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.api.iter.INDArrayIterator;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.NDArrayFactory;
@@ -62,6 +63,7 @@ public class AIInputHandler extends InputHandler{
 
     }
     public void update(ArrayList<Enemy> enemies){
+        int row = (int)(Math.random() * enemies.size());
 
         INDArray output = (dmodel.output(buildInput(enemies)[0]));
         //for(int i = 0; i < 10; i++){
@@ -72,11 +74,24 @@ public class AIInputHandler extends InputHandler{
         //    System.out.print("||");
         //}
         //System.out.println();
+        dmodel.fit(buildState(enemies));
 
         //evaluate and move here
+
         int max = 0;
+        double[] avg = {0,0,0,0};
+        for(int i = 0; i < enemies.size(); i++) {
+            avg[0]+=output.getRow(i).getFloat(0);
+            avg[1]+=output.getRow(i).getFloat(1);
+            avg[2]+=output.getRow(i).getFloat(2);
+            avg[3]+=output.getRow(i).getFloat(3);
+        }
+        avg[0]/=enemies.size();
+        avg[1]/=enemies.size();
+        avg[2]/=enemies.size();
+        avg[3]/=enemies.size();
         for(int i = 0; i < 4; i++) {
-            if (output.getRow(0).getFloat(i) > output.getRow(max).getFloat(max)){
+            if (output.getRow(row).getFloat(i) > output.getRow(row).getFloat(max)){
                 max = i;
             }
         }
@@ -105,7 +120,7 @@ public class AIInputHandler extends InputHandler{
             double[] cpos = enemies.get(i).getPosition();
             pos[i] = cpos;
             int[] label = {0,0,0,0};
-            label[(int)(Math.random() * 4)] = 1;
+            label[(int)(Math.random() * 4)] = 1; //change this
             lab[i] = label;
         }
         INDArray features = Nd4j.createFromArray(pos);
@@ -116,7 +131,6 @@ public class AIInputHandler extends InputHandler{
     private DataSet buildState(ArrayList<Enemy> enemies) {
         INDArray[] data = buildInput(enemies);
         DataSet alldata = new DataSet(data[0], data[1]);
-        //dmodel.fit(alldata);
         return alldata;
     }
 }

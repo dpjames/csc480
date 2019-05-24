@@ -17,6 +17,12 @@ public class Enemy extends GameObject {
         speedmod*=1.15;
     }
 
+    public static void reset() {
+        speedmod = 3;
+        globHeight = 10;
+        globWidth = 10;
+    }
+
     void regen(){
         this.px = Math.random() * 2 * Constants.WORLD_WIDTH - Constants.WORLD_WIDTH;
         this.px = Math.random() * 2 * Constants.WORLD_HEIGHT - Constants.WORLD_HEIGHT;

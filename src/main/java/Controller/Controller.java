@@ -29,21 +29,24 @@ public class Controller {
     public void gameLoop(){
         long after;
         long deltaT = 0;
-        while(model.isRunning()){
-            long now = System.nanoTime();
-            model.update(deltaT);
-            //try {
-            //    Thread.sleep(1);
-            //} catch (InterruptedException e) {
-            //    e.printStackTrace();
-            //}
-            after = System.nanoTime();
-            deltaT = Math.abs(after - now);
-            if(inputhandle != null){
-                inputhandle.update(model.getEnemies());
+        while(true) {
+            model.reset();
+            while (model.isRunning()) {
+                long now = System.nanoTime();
+                model.update(deltaT);
+                try {
+                    Thread.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                after = System.nanoTime();
+                deltaT = Math.abs(after - now);
+                if (inputhandle != null) {
+                    inputhandle.update(model.getEnemies());
+                }
             }
         }
-        System.out.println(model.getScore());
+        //System.out.println(model.getScore());
     }
 
 }
