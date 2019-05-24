@@ -3,6 +3,7 @@ package Model;
 import java.util.ArrayList;
 
 public class Model {
+    private double score = 0;
     private double EPSILON = .00001;
     private boolean gameOpen = true;
     private boolean running = true;
@@ -15,7 +16,7 @@ public class Model {
     private void createGameObs(){
         gameObs = new GameObjectArrayList();
         gameObs.setPlayer(new Player(gameObs));
-        gameObs.generateRandom(5);
+        gameObs.generateRandom(15);
     }
 
     public boolean gameIsOpen() {
@@ -34,6 +35,10 @@ public class Model {
         for(GameObject o : gameObs){
             o.update(seconds);
         }
+        if(gameObs.getPlayer().isDead()){
+            this.running = false;
+        }
+        score+=(seconds/100 *  gameObs.getPlayer().getWidth());
     }
 
     public ArrayList<GameObject> getGameObjects() {
@@ -42,5 +47,8 @@ public class Model {
 
     public void movePlayer(double vx, double vy) {
         this.gameObs.getPlayer().modifyVelocity(vx,vy);
+    }
+    public double getScore(){
+        return score;
     }
 }

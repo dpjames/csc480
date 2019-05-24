@@ -4,6 +4,8 @@ import java.awt.*;
 
 public class Player extends GameObject{
     private GameObjectArrayList gameObs;
+    private boolean dead;
+
     public Player(GameObjectArrayList gameObs){
         this.px = 10;
         this.py = 10;
@@ -15,6 +17,12 @@ public class Player extends GameObject{
     public void hit(){
         this.width-=10;
         this.height-=10;
+        if(this.width == 0 || this.height == 0){
+            this.dead = true;
+        }
+    }
+    public boolean isDead(){
+        return dead;
     }
     @Override
     public void update(double deltaT) {
@@ -37,6 +45,7 @@ public class Player extends GameObject{
             if(collides(o)){
                 //System.out.println("collided!!");
                 this.hit();
+                Enemy.hit();
                 o.regen();
             }
         }
@@ -44,5 +53,9 @@ public class Player extends GameObject{
     public void modifyVelocity(double vx, double vy) {
         this.vx += vx;
         this.vy += vy;
+    }
+
+    public double getWidth() {
+        return this.width;
     }
 }

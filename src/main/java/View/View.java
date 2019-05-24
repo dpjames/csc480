@@ -45,6 +45,9 @@ public class View {
             for(GameObject o : model.getGameObjects()){
                 o.render(g);
             }
+            g.setFont(new Font("Verdana", Font.BOLD, 30));
+            g.setColor(Color.WHITE);
+            g.drawString((int)(100 * model.getScore()) / 100.0 + "", 0 , 40);
         }
 
         @Override
