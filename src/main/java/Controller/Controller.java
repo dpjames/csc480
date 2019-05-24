@@ -34,6 +34,9 @@ public class Controller {
             while (model.isRunning()) {
                 long now = System.nanoTime();
                 model.update(deltaT);
+                if(!model.isRunning()){
+                    break;
+                }
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
@@ -41,15 +44,17 @@ public class Controller {
                 }
                 after = System.nanoTime();
                 deltaT = Math.abs(after - now);
+                //modify time
+                deltaT*=10;
                 if (inputhandle != null) {
                     inputhandle.update(model.getEnemies(), model.getPlayerPosition());
                 }
             }
+            System.out.println(model.getScore());
             if(inputhandle != null){
                 inputhandle.evaluate();
             }
         }
-        //System.out.println(model.getScore());
     }
 
 }

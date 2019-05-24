@@ -122,22 +122,49 @@ public class AIInputHandler extends InputHandler{
     }
 
     private INDArray[] buildInput(ArrayList<Enemy> enemies, double[] ppos) {
-        double[][] pos = new double[1][enemies.size() * 2 + 2];
-        int[][] lab = new int[1][4];
-        for(int i = 0; i < enemies.size(); i+=2){
-            double[] cpos = enemies.get(i).getPosition();
-            pos[0][i + 0] = cpos[0];
-            pos[0][i + 1] = cpos[1];
-            //int[] label = {0,0,0,0};
-            //label[(int)(Math.random() * 4)] = 1; //change this
+        int MOD_SIZE = 500;
+        double[][] pos = new double[MOD_SIZE][enemies.size() * 2 + 2];
+        int[][] lab = new int[MOD_SIZE][4];
+        for(int j = 0; j < MOD_SIZE; j++) {
+            ppos[0]+=j*Math.random();
+            ppos[1]+=j*Math.random();
+            for (int i = 0; i < enemies.size(); i += 2) {
+                double[] cpos = enemies.get(i).getPosition();
+                pos[j][i + 0] = cpos[0];
+                pos[j][i + 1] = cpos[1];
+                //int[] label = {0,0,0,0};
+                //label[(int)(Math.random() * 4)] = 1; //change this
+            }
+            lab[j][0] = 0;
+            lab[j][1] = 0;
+            lab[j][2] = 0;
+            lab[j][3] = 0;
+            pos[j][enemies.size()] = ppos[0];
+            pos[j][enemies.size()] = ppos[1];
+
+            int closest = 0;
+            double cdist = 1000000; //just a big number
+            for (int i = 0; i < enemies.size(); i++) {
+                double x = ppos[0] - enemies.get(i).getPosition()[0];
+                double y = ppos[1] - enemies.get(i).getPosition()[1];
+                double curDist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+                if (cdist > curDist) {
+                    cdist = curDist;
+                    closest = i;
+                }
+            }
+            double awayx = ppos[0] - enemies.get(closest).getPosition()[0]; //a vector to move away from the closest.
+            double awayy = ppos[1] - enemies.get(closest).getPosition()[1];
+
+            int index = 0;
+            if (Math.abs(awayx) > Math.abs(awayy)) {
+                index = awayx > 0 ? 0 : 1;
+            } else {
+                index = awayy > 0 ? 2 : 3;
+            }
+            lab[j][index] = 1;
         }
-        lab[0][0] = 0;
-        lab[0][1] = 0;
-        lab[0][2] = 0;
-        lab[0][3] = 0;
-        lab[0][(int)(Math.random() * 4)] = 1;
-        pos[0][enemies.size()] = ppos[0];
-        pos[0][enemies.size()] = ppos[1];
+
         INDArray features = Nd4j.createFromArray(pos);
         INDArray labels = Nd4j.createFromArray(lab);
         return new INDArray[]{features,labels};

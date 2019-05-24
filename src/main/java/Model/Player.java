@@ -8,10 +8,10 @@ public class Player extends GameObject{
     private boolean dead;
 
     public Player(GameObjectArrayList gameObs){
-        this.px = 10;
-        this.py = 10;
         this.width = 100;
         this.height = 100;
+        this.px = Constants.WORLD_WIDTH/2 - width/2;
+        this.py = Constants.WORLD_HEIGHT/2 - height/2;
         this.color = Color.YELLOW;
         this.gameObs = gameObs;
     }
@@ -58,8 +58,8 @@ public class Player extends GameObject{
         }
     }
     public void modifyVelocity(double vx, double vy) {
-        this.vx += vx;
-        this.vy += vy;
+        this.vx = vx;
+        this.vy = vy;
     }
 
     public double getWidth() {
