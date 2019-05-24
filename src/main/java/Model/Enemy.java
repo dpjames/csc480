@@ -14,7 +14,7 @@ public class Enemy extends GameObject {
     public static void hit() {
         globWidth+=10;
         globHeight+=10;
-        speedmod*=1.5;
+        speedmod*=1.15;
     }
 
     void regen(){
@@ -43,4 +43,7 @@ public class Enemy extends GameObject {
         }
     }
 
+    public double[] getPosition() {
+        return new double[]{py, px};
+    }
 }

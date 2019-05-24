@@ -51,4 +51,8 @@ public class Model {
     public double getScore(){
         return score;
     }
+
+    public ArrayList<Enemy> getEnemies() {
+        return gameObs.getEnemies();
+    }
 }

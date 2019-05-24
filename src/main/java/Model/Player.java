@@ -4,6 +4,7 @@ import java.awt.*;
 
 public class Player extends GameObject{
     private GameObjectArrayList gameObs;
+    private double MAXSPEED = 100;
     private boolean dead;
 
     public Player(GameObjectArrayList gameObs){
@@ -27,6 +28,12 @@ public class Player extends GameObject{
     @Override
     public void update(double deltaT) {
         super.update(deltaT);
+        if(Math.abs(vx) > MAXSPEED){
+            vx = vx < 0 ? -MAXSPEED : MAXSPEED;
+        }
+        if(Math.abs(vy) > MAXSPEED){
+            vy = vy < 0 ? -MAXSPEED : MAXSPEED;
+        }
 
         //wrap around when hitting an edge
         if(this.px < -1 * this.width){
