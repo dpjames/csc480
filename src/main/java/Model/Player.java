@@ -36,16 +36,20 @@ public class Player extends GameObject{
         }
 
         //wrap around when hitting an edge
-        if(this.px < -1 * this.width){
-            this.px = Constants.WORLD_WIDTH;
-        } else if(this.px > Constants.WORLD_WIDTH){
-            this.px = -1 * this.width;
-        }
-        if(this.py < -1 * this.width){
-            this.py = Constants.WORLD_HEIGHT;
-        } else if(this.py > Constants.WORLD_HEIGHT){
-            this.py = -1 * this.height;
-        }
+       if(this.px < -1 * this.width){
+           this.px = 0;
+           //this.px = Constants.WORLD_WIDTH;
+       } else if(this.px > Constants.WORLD_WIDTH){
+           this.px = Constants.WORLD_WIDTH - this.width;
+           //this.px = -1 * this.width;
+       }
+       if(this.py < -1 * this.width){
+           this.py = 0;
+           //this.py = Constants.WORLD_HEIGHT;
+       } else if(this.py > Constants.WORLD_HEIGHT){
+           this.py = Constants.WORLD_HEIGHT - this.height;
+           //this.py = -1 * this.height;
+       }
 
         //check if collision
         for(Enemy o : this.gameObs.getEnemies()){

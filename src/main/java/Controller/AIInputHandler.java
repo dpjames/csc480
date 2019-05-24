@@ -142,8 +142,8 @@ public class AIInputHandler extends InputHandler{
             pos[j][enemies.size()] = ppos[0];
             pos[j][enemies.size()] = ppos[1];
 
-            int closest = 0;
-            double cdist = 1000000; //just a big number
+            int closest = 0; //index
+            double cdist = 1000000; //just a big number //values
             for (int i = 0; i < enemies.size(); i++) {
                 double x = ppos[0] - enemies.get(i).getPosition()[0];
                 double y = ppos[1] - enemies.get(i).getPosition()[1];
