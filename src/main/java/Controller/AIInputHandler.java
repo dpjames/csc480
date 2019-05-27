@@ -27,6 +27,13 @@ import java.util.*;
 public class AIInputHandler extends InputHandler{
     private MultiLayerNetwork dmodel;
 
+    public static double WORLD_HEIGHT = 1000;
+    public static double WORLD_WIDTH  = 1000;
+    public final int    RIGHT  = 0;
+    public final int    LEFT  = 1;
+    public final int    DOWN  = 2;
+    public final int    UP  = 3;
+
     public AIInputHandler(Model m) {
         this.model = m;
         int seed = 123;
@@ -105,16 +112,16 @@ public class AIInputHandler extends InputHandler{
         //System.out.println();
         int dir = max;
         switch(dir){
-            case(0):
+            case(RIGHT):
                 movePlayer(VELOCITY * 2, 0);
                 break;
-            case(1):
+            case(LEFT):
                 movePlayer(-VELOCITY * 2, 0 );
                 break;
-            case(2):
+            case(DOWN):
                 movePlayer(0, VELOCITY * 2);
                 break;
-            case(3):
+            case(UP):
                 movePlayer(0, -VELOCITY * 2);
                 break;
         }
@@ -122,7 +129,7 @@ public class AIInputHandler extends InputHandler{
     }
 
     private INDArray[] buildInput(ArrayList<Enemy> enemies, double[] ppos) {
-        int MOD_SIZE = 500;
+        int MOD_SIZE = 50;
         double[][] pos = new double[MOD_SIZE][enemies.size() * 2 + 2];
         int[][] lab = new int[MOD_SIZE][4];
         for(int j = 0; j < MOD_SIZE; j++) {
@@ -142,19 +149,27 @@ public class AIInputHandler extends InputHandler{
             pos[j][enemies.size()] = ppos[0];
             pos[j][enemies.size()] = ppos[1];
 
-            int closest = 0; //index
             double cdist = 1000000; //just a big number //values
+            double awayx = 0, awayy = 0;
             for (int i = 0; i < enemies.size(); i++) {
-                double x = ppos[0] - enemies.get(i).getPosition()[0];
-                double y = ppos[1] - enemies.get(i).getPosition()[1];
+                double x = Math.abs(ppos[0] - enemies.get(i).getPosition()[0]);
+                int xdir = 1, ydir = 1;
+                if (x / WORLD_WIDTH > 0.5) { //if the x distance calculated is more than half the world width, the other way is shorter
+                    x = WORLD_WIDTH - x;
+                    xdir = -1;
+                }
+                double y = Math.abs(ppos[1] - enemies.get(i).getPosition()[1]);
+                if (y / WORLD_HEIGHT > 0.5) {
+                    y = WORLD_HEIGHT - y;
+                    ydir = -1;
+                }
                 double curDist = Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
                 if (cdist > curDist) {
                     cdist = curDist;
-                    closest = i;
+                    awayx = xdir * (ppos[0] - enemies.get(i).getPosition()[0]);  //vector to move away from the closest enemy
+                    awayy = ydir * (ppos[1] - enemies.get(i).getPosition()[1]);
                 }
             }
-            double awayx = ppos[0] - enemies.get(closest).getPosition()[0]; //a vector to move away from the closest.
-            double awayy = ppos[1] - enemies.get(closest).getPosition()[1];
 
             int index = 0;
             if (Math.abs(awayx) > Math.abs(awayy)) {

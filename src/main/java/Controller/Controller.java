@@ -45,7 +45,7 @@ public class Controller {
                 after = System.nanoTime();
                 deltaT = Math.abs(after - now);
                 //modify time
-                deltaT*=100;
+                deltaT*= 10;
                 if (inputhandle != null) {
                     inputhandle.update(model.getEnemies(), model.getPlayerPosition());
                 }

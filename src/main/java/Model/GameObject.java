@@ -45,7 +45,7 @@ public class GameObject {
         return true;
     }
     boolean checkInBounds(){
-        return (this.px > 0 && this.px + this.width < Constants.WORLD_WIDTH) && (this.py > 0 && this.py + width < Constants.WORLD_HEIGHT);
+        return (this.px > 0 - this.width && this.px + this.width < Constants.WORLD_WIDTH + this.width) && (this.py > 0 - this.width && this.py + this.width < Constants.WORLD_HEIGHT + this.width);
     }
 
 
