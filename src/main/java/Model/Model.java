@@ -16,7 +16,7 @@ public class Model {
     private void createGameObs(){
         gameObs = new GameObjectArrayList();
         gameObs.setPlayer(new Player(gameObs));
-        gameObs.generateRandom(30);
+        gameObs.generateRandom(15);
     }
 
     public boolean gameIsOpen() {
