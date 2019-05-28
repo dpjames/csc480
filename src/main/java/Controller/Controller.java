@@ -2,7 +2,7 @@ package Controller;
 
 import Model.Model;
 import View.View;
-
+import Model.Constants;
 public class Controller {
     private Model model;
     private View view;
@@ -45,7 +45,7 @@ public class Controller {
                 after = System.nanoTime();
                 deltaT = Math.abs(after - now);
                 //modify time
-                deltaT*= 10;
+                deltaT*= Constants.TIME_MOD;
                 if (inputhandle != null) {
                     inputhandle.update(model.getEnemies(), model.getPlayerPosition());
                 }
