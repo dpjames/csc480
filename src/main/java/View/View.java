@@ -1,6 +1,7 @@
 package View;
 
 import Controller.GUIInputHandler;
+import Controller.InputHandler;
 import Model.Model;
 import Model.GameObject;
 import Model.Constants;
@@ -14,7 +15,6 @@ public class View {
     private JFrame window;
     private DrawingBoard canvas;
     private Model model;
-    private GUIInputHandler inputHandler;
     public View(Model m){
         System.out.println("init view");
         this.model = m;
@@ -28,7 +28,6 @@ public class View {
         window.setLayout(new BorderLayout());
         window.setResizable(false);
         window.add("Center", canvas);
-        inputHandler = new GUIInputHandler(canvas, m);
         window.pack();
         Timer drawTime = new Timer(1, canvas);
         drawTime.start();
@@ -36,6 +35,11 @@ public class View {
     public void render(){
         canvas.repaint();
     }
+
+    public JPanel getCanvas() {
+        return canvas;
+    }
+
     private class DrawingBoard extends JPanel implements ActionListener{
         @Override
         public void paintComponent(Graphics g){

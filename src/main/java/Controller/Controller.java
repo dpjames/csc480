@@ -46,14 +46,11 @@ public class Controller {
                 deltaT = Math.abs(after - now);
                 //modify time
                 deltaT*= Constants.TIME_MOD;
-                if (inputhandle != null) {
+                if (inputhandle != null && Constants.RUN_AI) {
                     inputhandle.update(model.getEnemies(), model.getPlayerPosition());
                 }
             }
             System.out.println(model.getScore());
-            if(inputhandle != null){
-                inputhandle.evaluate();
-            }
         }
     }
 

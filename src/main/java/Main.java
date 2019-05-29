@@ -3,7 +3,7 @@ import Model.Model;
 import View.View;
 import Controller.AIInputHandler;
 import org.tensorflow.*;
-
+import Controller.InputHandler;
 import java.io.UnsupportedEncodingException;
 
 public class Main {
@@ -35,6 +35,7 @@ public class Main {
 
         Model m = new Model();
         View v = new View(m);
+        InputHandler ih = new AIInputHandler(v.getCanvas(), m);
         Controller c = new Controller(m, null, new AIInputHandler(m));
         //Controller c = new Controller(m, v);
         c.gameLoop();
