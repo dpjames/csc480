@@ -41,13 +41,16 @@ public class Controller {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }
+                }https://stackoverflow.com/questions/17865465/how-do-i-draw-an-image-to-a-jpanel-or-jframe
                 after = System.nanoTime();
                 deltaT = Math.abs(after - now);
                 //modify time
                 deltaT*= Constants.TIME_MOD;
                 if (inputhandle != null && Constants.RUN_AI) {
                     inputhandle.update(model.getEnemies(), model.getPlayerPosition());
+                }
+                if(inputhandle != null && !Constants.RUN_AI){
+                    inputhandle.addDataPoint();
                 }
             }
             System.out.println(model.getScore());

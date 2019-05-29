@@ -28,7 +28,7 @@ public class AIInputHandler extends InputHandler{
     private final int    _UP  = 3;
 
     private ArrayList<INDArray[]> states = new ArrayList<>();
-
+    private static int prevDir = 0;
     private static final String LEFT = "LEFT";
     @Override
     public void movePlayer(double xa, double ya){
@@ -43,9 +43,7 @@ public class AIInputHandler extends InputHandler{
         } else if(ya < 0){
             dir = _UP;
         }
-        if(!Constants.RUN_AI) {
-            states.add(makeState(model.getEnemies(), model.getPlayerPosition(), dir));
-        }
+        prevDir = dir;
     }
 
     private Action left = new AbstractAction(LEFT){
@@ -103,7 +101,7 @@ public class AIInputHandler extends InputHandler{
     };
     private void train(){
         System.out.println("train!!");
-        for(int i = 0; i < 100; i++) {
+        for(int i = 0; i < 500; i++) {
             for (INDArray[] a : states) {
                 dmodel.fit(new DataSet(a[0], a[1]));
             }
@@ -193,6 +191,12 @@ public class AIInputHandler extends InputHandler{
         dmodel = new MultiLayerNetwork(conf);
         dmodel.init();
     }
+    public void addDataPoint(){
+        if(!Constants.RUN_AI) {
+            System.out.println(prevDir);
+            states.add(makeState(model.getEnemies(), model.getPlayerPosition(), prevDir));
+        }
+    }
     public void update(ArrayList<Enemy> enemies, double[] ppos){
         INDArray input = makeInput(enemies, ppos);
         INDArray output = dmodel.output(input);
@@ -234,7 +238,6 @@ public class AIInputHandler extends InputHandler{
         return features;
     }
     private INDArray[] makeState(ArrayList<Enemy> enemies, double[] ppos, int dir) {
-        System.out.println(dir);
         double[][] pos = new double[1][enemies.size() * 2 + 2];
         int[][] lab = {{0,0,0,0}};
         lab[0][dir] = 1;
