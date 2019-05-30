@@ -31,17 +31,23 @@ public class Controller {
         long deltaT = 0;
         while(true) {
             model.reset();
-            while (model.isRunning()) {
+            //model = new Model();
+            while (model.isRunning() && !Constants.IS_TRAINING) {
+                if(Constants.DO_TRAIN){
+                    inputhandle.train();
+                    Constants.DO_TRAIN = false;
+                    break;
+                }
                 long now = System.nanoTime();
-                model.update(deltaT);
-                if(!model.isRunning()){
+                    model.update(deltaT);
+                if(!model.isRunning() || Constants.IS_TRAINING){
                     break;
                 }
                 try {
                     Thread.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
-                }https://stackoverflow.com/questions/17865465/how-do-i-draw-an-image-to-a-jpanel-or-jframe
+                }
                 after = System.nanoTime();
                 deltaT = Math.abs(after - now);
                 //modify time
@@ -50,10 +56,13 @@ public class Controller {
                     inputhandle.update(model.getEnemies(), model.getPlayerPosition());
                 }
                 if(inputhandle != null && !Constants.RUN_AI){
-                    inputhandle.addDataPoint();
+                    //inputhandle.addDataPoint();
                 }
             }
-            System.out.println(model.getScore());
+            model.running = true;
+            if(!Constants.IS_TRAINING) {
+                System.out.println(model.getScore());
+            }
         }
     }
 

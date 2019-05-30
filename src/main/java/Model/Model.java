@@ -6,7 +6,7 @@ public class Model {
     private double score = 0;
     private double EPSILON = .00001;
     private boolean gameOpen = true;
-    private boolean running = true;
+    public boolean running = true;
     private GameObjectArrayList gameObs;
 
 
@@ -15,8 +15,8 @@ public class Model {
     }
     private void createGameObs(){
         gameObs = new GameObjectArrayList();
-        gameObs.setPlayer(new Player(gameObs));
         gameObs.generateRandom(15);
+        gameObs.setPlayer(new Player(gameObs));
     }
 
     public boolean gameIsOpen() {

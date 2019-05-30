@@ -3,8 +3,8 @@ package Model;
 
 public class Enemy extends GameObject {
     public boolean inbounds;
-    static int globWidth = 10;
-    static int globHeight = 10;
+    static int globWidth = 40;
+    static int globHeight = 40;
     private static double speedmod = 3;
     public Enemy(){
         super();
@@ -19,8 +19,8 @@ public class Enemy extends GameObject {
 
     public static void reset() {
         speedmod = 3;
-        globHeight = 10;
-        globWidth = 10;
+        globHeight = 40;
+        globWidth = 40;
     }
 
     void regen(){
@@ -52,4 +52,5 @@ public class Enemy extends GameObject {
     public double[] getPosition() {
         return new double[]{py, px};
     }
+
 }
