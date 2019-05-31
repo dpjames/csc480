@@ -107,20 +107,20 @@ public class AIInputHandler extends InputHandler{
     public double totScore = 0;
     public int ngames = 0;
     void train(double thisScore){
-        //if(thisScore < .4 * avgScore){
-        //    return;
-        //}
+        if(thisScore < .4 * avgScore){
+            return;
+        }
         ngames++;
-        boolean remake = avgScore * 2 < thisScore || thisScore > maxScore;
+        boolean remake = avgScore * 1.4 < thisScore || thisScore > maxScore;
         int iterations = 1;
         if(remake){
             System.out.println("remake model");
-            initDmod();
             avgScore = thisScore;
             totScore = thisScore * ngames;
         }
         System.out.println(avgScore * .75 + " ... " + thisScore + " .,.. " + ((avgScore * .75) < thisScore));
         if((avgScore * .75  < thisScore) || remake) {
+            //initDmod();
             System.out.println("better, training");
             maxScore = maxScore > thisScore ? maxScore : thisScore;
             for (int i = 0; i < iterations; i++) {
@@ -165,9 +165,9 @@ public class AIInputHandler extends InputHandler{
     }
     public void initDmod(){
         int numInputs = model.getGameObjects().size() * N_VAR_PER - N_VAR_PER + 4;
-        int numOutputs = 4;
-        int numHiddenNodes = 40;
-        double learningRate = .00001;
+        int numOutputs = N_OUTPUT_MOD * 4;
+        int numHiddenNodes = 100;
+        double learningRate = .000001;
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .weightInit(WeightInit.XAVIER)
                 .seed(System.nanoTime())
@@ -175,6 +175,9 @@ public class AIInputHandler extends InputHandler{
                 .list()
                 .layer(new DenseLayer.Builder().nIn(numInputs).nOut(numHiddenNodes)
                         .activation(Activation.HARDSIGMOID)
+                        .build())
+                .layer(new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
+                        .activation(Activation.RATIONALTANH)
                         .build())
                 .layer(new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
                         .activation(Activation.SOFTMAX)
@@ -197,10 +200,10 @@ public class AIInputHandler extends InputHandler{
         INDArray input = makeInput(enemies, ppos);
         INDArray output = dmodel.output(input);
         //dmodel.fit(buildState(enemies));
-        float left = output.getFloat(_LEFT);
-        float right = output.getFloat(_RIGHT);
-        float up = output.getFloat(_UP);
-        float down = output.getFloat(_DOWN);
+        float left = output.getFloat(_LEFT) + output.getFloat(_LEFT * 2) / 2;
+        float right = output.getFloat(_RIGHT) + output.getFloat(_RIGHT * 2) / 2;
+        float up = output.getFloat(_UP) + output.getFloat(_UP * 2) / 2;
+        float down = output.getFloat(_DOWN) + output.getFloat(_DOWN * 2) / 2;
         float x = right - left;
         float y = down - up;
 
@@ -249,10 +252,12 @@ public class AIInputHandler extends InputHandler{
         INDArray features = Nd4j.createFromArray(pos);
         return features;
     }
+    private int N_OUTPUT_MOD = 2;
     private INDArray[] makeState(ArrayList<Enemy> enemies, double[] ppos, int dir) {
         double[][] pos = new double[1][enemies.size() * N_VAR_PER + 4];
-        int[][] lab = {{0,0,0,0}};
-        lab[0][dir] = 1;
+        int[][] lab = new int[1][N_OUTPUT_MOD * 4];
+        int index = (int) (Math.round(Math.random() * N_OUTPUT_MOD) * dir);
+        lab[0][index] = 1;
         for(int i = 0; i < enemies.size() * N_VAR_PER; i+=N_VAR_PER){
             double[] epos = enemies.get(i/N_VAR_PER).getPosition();
             pos[0][i] =   (epos[0] + enemies.get(i/N_VAR_PER).getWidth()/N_VAR_PER) - ppos[0];

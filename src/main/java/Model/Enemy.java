@@ -19,7 +19,7 @@ public class Enemy extends GameObject {
     }
 
     public static void reset() {
-        speedmod = 3;
+        speedmod = 2;
         //globHeight = 10;
         //globWidth = 10;
     }
