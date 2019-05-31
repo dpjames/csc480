@@ -12,18 +12,20 @@ public class Enemy extends GameObject {
     }
 
     public static void hit() {
-        globWidth+=10;
-        globHeight+=10;
+        //globWidth+=10;
+        //globHeight+=10;
         speedmod*=1.15;
     }
 
     public static void reset() {
         speedmod = 3;
-        globHeight = 10;
-        globWidth = 10;
+        //globHeight = 10;
+        //globWidth = 10;
     }
 
     void regen(){
+        width = (int) (Math.random() * 100 + 10);
+        height = width;
         this.px = Math.random() * 2 * Constants.WORLD_WIDTH - Constants.WORLD_WIDTH;
         this.px = Math.random() * 2 * Constants.WORLD_HEIGHT - Constants.WORLD_HEIGHT;
         this.vx = (Math.random() * Constants.WORLD_WIDTH)  - px;
@@ -36,8 +38,8 @@ public class Enemy extends GameObject {
     }
     @Override
     public void update(double deltaT) {
-        this.width = globWidth;
-        this.height = globHeight;
+        //this.width = globWidth;
+        //this.height = globHeight;
         super.update(deltaT);
         if(this.inbounds){
             if(!checkInBounds()){

@@ -49,4 +49,7 @@ public class GameObject {
     }
 
 
+    public double getWidth() {
+        return width ;
+    }
 }

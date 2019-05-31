@@ -6,19 +6,18 @@ public class Player extends GameObject{
     private GameObjectArrayList gameObs;
     private double MAXSPEED = 10;
     private boolean dead;
-
+    private int lives = 3;
     public Player(GameObjectArrayList gameObs){
-        this.width = 100;
-        this.height = 100;
+        this.width = 10;
+        this.height = 10;
         this.px = Constants.WORLD_WIDTH/2 - width/2;
         this.py = Constants.WORLD_HEIGHT/2 - height/2;
         this.color = Color.YELLOW;
         this.gameObs = gameObs;
     }
     public void hit(){
-        this.width-=10;
-        this.height-=10;
-        if(this.width == 0 || this.height == 0){
+        this.lives--;
+        if(this.lives <= 0){
             this.dead = true;
         }
     }
@@ -37,18 +36,18 @@ public class Player extends GameObject{
 
         //wrap around when hitting an edge
        if(this.px < -1 * this.width){
-           //this.px = 0;
-           this.px = Constants.WORLD_WIDTH;
+           //this.px = Constants.WORLD_WIDTH;
+           this.px = 0;
        } else if(this.px > Constants.WORLD_WIDTH){
-           //this.px = Constants.WORLD_WIDTH - this.width;
-           this.px = -1 * this.width;
+           //this.px = -1 * this.width;
+           this.px = Constants.WORLD_WIDTH - this.width;
        }
        if(this.py < -1 * this.width){
-           //this.py = 0;
-           this.py = Constants.WORLD_HEIGHT;
+           //this.py = Constants.WORLD_HEIGHT;
+           this.py = 0;
        } else if(this.py > Constants.WORLD_HEIGHT){
-           //this.py = Constants.WORLD_HEIGHT - this.height;
-           this.py = -1 * this.height;
+           //this.py = -1 * this.height;
+           this.py = Constants.WORLD_HEIGHT - this.height;
        }
 
         //check if collision

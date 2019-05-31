@@ -16,7 +16,7 @@ public class Model {
     private void createGameObs(){
         gameObs = new GameObjectArrayList();
         gameObs.setPlayer(new Player(gameObs));
-        gameObs.generateRandom(15);
+        gameObs.generateRandom(20);
     }
 
     public boolean gameIsOpen() {
@@ -32,7 +32,7 @@ public class Model {
 
     public void update(long deltaT) {
         double seconds = deltaT/1000000000.0;
-        score+=(seconds * 1000/  gameObs.getPlayer().getWidth());
+        score+=seconds;
         for(GameObject o : gameObs){
             o.update(seconds);
         }
