@@ -6,7 +6,7 @@ public class Player extends GameObject{
     private GameObjectArrayList gameObs;
     private double MAXSPEED = 10;
     private boolean dead;
-    private int lives = 3;
+    private int lives = 1;
     public Player(GameObjectArrayList gameObs){
         this.width = 10;
         this.height = 10;
@@ -36,18 +36,18 @@ public class Player extends GameObject{
 
         //wrap around when hitting an edge
        if(this.px < -1 * this.width){
-           //this.px = Constants.WORLD_WIDTH;
            this.px = 0;
+           this.px = Constants.WORLD_WIDTH;
        } else if(this.px > Constants.WORLD_WIDTH){
-           //this.px = -1 * this.width;
            this.px = Constants.WORLD_WIDTH - this.width;
+           this.px = -1 * this.width;
        }
        if(this.py < -1 * this.width){
-           //this.py = Constants.WORLD_HEIGHT;
            this.py = 0;
+           this.py = Constants.WORLD_HEIGHT;
        } else if(this.py > Constants.WORLD_HEIGHT){
-           //this.py = -1 * this.height;
            this.py = Constants.WORLD_HEIGHT - this.height;
+           this.py = -1 * this.height;
        }
 
         //check if collision

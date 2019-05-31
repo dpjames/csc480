@@ -48,13 +48,12 @@ public class Controller {
                 deltaT*= Constants.TIME_MOD;
                 if (inputhandle != null && Constants.RUN_AI) {
                     inputhandle.update(model.getEnemies(), model.getPlayerPosition());
-                    inputhandle.addDataPoint();
+                    //inputhandle.addDataPoint();
                 }
             }
             if(inputhandle != null && Constants.RUN_AI){
                 inputhandle.train(model.getScore());
             }
-            System.out.println(model.getScore());
         }
     }
 

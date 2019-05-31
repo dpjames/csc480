@@ -17,6 +17,7 @@ public class Model {
         gameObs = new GameObjectArrayList();
         gameObs.setPlayer(new Player(gameObs));
         gameObs.generateRandom(20);
+        Enemy.player = gameObs.getPlayer();
     }
 
     public boolean gameIsOpen() {
@@ -67,4 +68,5 @@ public class Model {
     public double[] getPlayerPosition() {
         return gameObs.getPlayer().getPosition();
     }
+
 }

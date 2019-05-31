@@ -5,6 +5,7 @@ public class Enemy extends GameObject {
     public boolean inbounds;
     static int globWidth = 10;
     static int globHeight = 10;
+    static Player player;
     private static double speedmod = 3;
     public Enemy(){
         super();
@@ -26,8 +27,10 @@ public class Enemy extends GameObject {
     void regen(){
         width = (int) (Math.random() * 100 + 10);
         height = width;
-        this.px = Math.random() * 2 * Constants.WORLD_WIDTH - Constants.WORLD_WIDTH;
-        this.px = Math.random() * 2 * Constants.WORLD_HEIGHT - Constants.WORLD_HEIGHT;
+        do {
+            this.px = Math.random() * 3 * Constants.WORLD_WIDTH - Constants.WORLD_WIDTH;
+            this.py = Math.random() * 3 * Constants.WORLD_HEIGHT - Constants.WORLD_HEIGHT;
+        } while(checkInBounds());
         this.vx = (Math.random() * Constants.WORLD_WIDTH)  - px;
         this.vy = (Math.random() * Constants.WORLD_HEIGHT) - py;
         //normalize speed;
@@ -40,6 +43,11 @@ public class Enemy extends GameObject {
     public void update(double deltaT) {
         //this.width = globWidth;
         //this.height = globHeight;
+        //this.vx = player.getPosition()[0] - this.px;
+        //this.vy = player.getPosition()[1] - this.py;
+        //double normScale = Math.sqrt(Math.pow(this.vx, 2) + Math.pow(this.vy, 2));
+        //this.vx /= normScale / speedmod;
+        //this.vy /= normScale / speedmod;
         super.update(deltaT);
         if(this.inbounds){
             if(!checkInBounds()){
