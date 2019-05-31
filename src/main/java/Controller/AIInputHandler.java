@@ -166,22 +166,22 @@ public class AIInputHandler extends InputHandler{
     public void initDmod(){
         int numInputs = model.getGameObjects().size() * N_VAR_PER - N_VAR_PER + 4;
         int numOutputs = N_OUTPUT_MOD * 4;
-        int numHiddenNodes = 100;
-        double learningRate = .000001;
+        int numHiddenNodes = 10;
+        double learningRate = .00001;
         MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                 .weightInit(WeightInit.XAVIER)
                 .seed(System.nanoTime())
                 .updater(new Nesterovs(learningRate, 0.9))
                 .list()
-                .layer(new DenseLayer.Builder().nIn(numInputs).nOut(numHiddenNodes)
+                .layer(new DenseLayer.Builder().nIn(numInputs).weightInit(WeightInit.XAVIER).nOut(numHiddenNodes)
                         .activation(Activation.HARDSIGMOID)
                         .build())
-                .layer(new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes)
-                        .activation(Activation.RATIONALTANH)
+                .layer(new DenseLayer.Builder().nIn(numHiddenNodes).nOut(numHiddenNodes/2)
+                        .activation(Activation.TANH)
                         .build())
                 .layer(new OutputLayer.Builder(LossFunctions.LossFunction.NEGATIVELOGLIKELIHOOD)
-                        .activation(Activation.SOFTMAX)
-                        .nIn(numHiddenNodes).nOut(numOutputs).build())
+                        .activation(Activation.SOFTMAX).weightInit(WeightInit.XAVIER)
+                        .nIn(numHiddenNodes/2).nOut(numOutputs).build())
                 .build();
         dmodel = new MultiLayerNetwork(conf);
         dmodel.init();
@@ -252,7 +252,7 @@ public class AIInputHandler extends InputHandler{
         INDArray features = Nd4j.createFromArray(pos);
         return features;
     }
-    private int N_OUTPUT_MOD = 2;
+    private int N_OUTPUT_MOD = 4;
     private INDArray[] makeState(ArrayList<Enemy> enemies, double[] ppos, int dir) {
         double[][] pos = new double[1][enemies.size() * N_VAR_PER + 4];
         int[][] lab = new int[1][N_OUTPUT_MOD * 4];

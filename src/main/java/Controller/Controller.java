@@ -51,7 +51,7 @@ public class Controller {
                     //inputhandle.addDataPoint();
                 }
             }
-            if(inputhandle != null && Constants.RUN_AI){
+            if(inputhandle != null){
                 inputhandle.train(model.getScore());
             }
         }
