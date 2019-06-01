@@ -30,29 +30,33 @@ public class Controller {
         long after;
         long deltaT = 0;
         while(true) {
-            model.reset();
-            while (model.isRunning()) {
-                long now = System.nanoTime();
-                model.update(deltaT);
-                if(!model.isRunning()){
-                    break;
+            for(int i = 0; i < inputhandle.N_PER_GEN; i++) {
+                System.out.println(i);
+                model.reset();
+                inputhandle.setDmodel(i);
+                while (model.isRunning()) {
+                    long now = System.nanoTime();
+                    model.update(deltaT);
+                    if (!model.isRunning()) {
+                        break;
+                    }
+                    try {
+                        Thread.sleep(1);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    after = System.nanoTime();
+                    deltaT = Math.abs(after - now);
+                    //modify timedd
+                    deltaT *= Constants.TIME_MOD;
+                    if(Constants.RUN_AI){
+                        inputhandle.update();
+                    }
                 }
-                try {
-                    Thread.sleep(1);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                after = System.nanoTime();
-                deltaT = Math.abs(after - now);
-                //modify timedd
-                deltaT*= Constants.TIME_MOD;
-                if (inputhandle != null && Constants.RUN_AI) {
-                    inputhandle.update(model.getEnemies(), model.getPlayerPosition());
-                    //inputhandle.addDataPoint();
-                }
+                inputhandle.addScore(model.getScore());
             }
             if(inputhandle != null){
-                inputhandle.train(model.getScore());
+                inputhandle.mutate();
             }
         }
     }
