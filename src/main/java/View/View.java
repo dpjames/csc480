@@ -9,6 +9,7 @@ import Model.Constants;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ConcurrentModificationException;
 
 public class View {
     private static final String TITLE = "A very COOL title";
@@ -46,8 +47,12 @@ public class View {
             super.paintComponent(g);
             g.setColor(Color.BLUE);
             g.fillRect(0,0,(int)Constants.WORLD_WIDTH,(int)Constants.WORLD_HEIGHT);
-            for(GameObject o : model.getGameObjects()){
-                o.render(g);
+            try {
+                for (GameObject o : model.getGameObjects()) {
+                    o.render(g);
+                }
+            } catch (ConcurrentModificationException e){
+                //yeah ignore this
             }
             g.setFont(new Font("Verdana", Font.BOLD, 30));
             g.setColor(Color.WHITE);

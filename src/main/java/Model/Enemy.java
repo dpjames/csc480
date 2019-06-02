@@ -60,6 +60,6 @@ public class Enemy extends GameObject {
     }
 
     public double[] getPosition() {
-        return new double[]{py, px};
+        return new double[]{px, py};
     }
 }

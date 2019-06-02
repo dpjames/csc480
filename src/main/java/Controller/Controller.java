@@ -26,6 +26,9 @@ public class Controller {
             //menu things here. split out a ui thread and wait for callbacks.
             // have view dispatch the game loop.
     }
+    public void runGame(){
+
+    }
     public void gameLoop(){
         long after;
         long deltaT = 0;
@@ -33,7 +36,9 @@ public class Controller {
         while(true) {
             generationNumber++;
             for(int i = 0; i < inputhandle.N_PER_GEN; i++) {
-                System.out.println(generationNumber + "." + i);
+                System.out.print("\r                                                   ");
+                System.out.print("\r" + generationNumber + "." + i);
+                //split threads
                 model.reset();
                 inputhandle.setDmodel(i);
                 while (model.isRunning()) {
@@ -57,8 +62,10 @@ public class Controller {
                 }
                 inputhandle.addScore(model.getScore());
             }
+            //joinAllThreads()
+            System.out.print("\r                                 ");
             if(inputhandle != null){
-                inputhandle.mutate();
+                inputhandle.mutate(generationNumber);
             }
         }
     }

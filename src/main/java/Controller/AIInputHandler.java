@@ -10,12 +10,15 @@ import org.deeplearning4j.nn.conf.layers.OutputLayer;
 import org.deeplearning4j.nn.multilayer.MultiLayerNetwork;
 import org.deeplearning4j.nn.weights.WeightInit;
 import org.nd4j.linalg.activations.Activation;
+import org.nd4j.linalg.activations.IActivation;
+import org.nd4j.linalg.activations.impl.ActivationCube;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.dataset.DataSet;
 import org.nd4j.linalg.factory.Nd4j;
 import org.nd4j.linalg.learning.config.Nesterovs;
 import org.nd4j.linalg.lossfunctions.LossFunctions;
 import Model.Constants;
+import org.nd4j.linalg.primitives.Pair;
 import org.tensorflow.op.core.Mul;
 
 import javax.swing.*;
@@ -35,6 +38,10 @@ public class AIInputHandler extends InputHandler{
 
 
     private static final String LEFT = "LEFT";
+    @Override
+    public void movePlayer(double xv, double yv){
+        super.movePlayer(xv,yv);
+    }
     private Action left = new AbstractAction(LEFT){
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -117,11 +124,10 @@ public class AIInputHandler extends InputHandler{
         initDmod();
     }
     public void initDmod(){
-        int numInputs = model.getGameObjects().size() * N_VAR_PER - N_VAR_PER + 2;
+        int numInputs = 6;//model.getGameObjects().size() * N_VAR_PER - N_VAR_PER + 2;
         int numOutputs = 4;
         int numHiddenNodes = 200;
         double learningRate = .00001;
-        N_PER_GEN = 10 * numInputs;
         for(int i = 0; i < N_PER_GEN; i++) {
             MultiLayerConfiguration conf = new NeuralNetConfiguration.Builder()
                     .weightInit(WeightInit.XAVIER)
@@ -185,69 +191,79 @@ public class AIInputHandler extends InputHandler{
         //float y = down - up;
         //movePlayer(VELOCITY * x, VELOCITY * y);
     }
-    //private double DISTANCE_THRESHOLD = 30;
-    //private INDArray makeInput(){
-    //    ArrayList<Enemy> enemies = model.getEnemies();
-    //    double[] ppos = model.getPlayerPosition();
-    //    double[][] clear = new double[1][4];
-    //    for(int i = 0; i < enemies.size(); i++){
-    //        double[] epos = enemies.get(i).getPosition();
-    //        double ewidth = enemies.get(i).getWidth();
-    //        double distance = getDistance(epos, ewidth, ppos);
-    //        double deltaWidth = ewidth/2 + ppos[2] / 2;
-    //        if(distance < DISTANCE_THRESHOLD){
-    //            if(epos[0] + ewidth/2 - ppos[0] + ppos[2] / 2 < deltaWidth){
-    //                if(epos[1] > ppos[1]){
-    //            }
-    //            if(epos[1] + ewidth/2 - ppos[1] + ppos[2] / 2 < deltaWidth) {
-
-    //            }
-    //        }
-    //    }
-    //    INDArray features = Nd4j.createFromArray(clear);
-    //    return features;
-    //}
+    private double DISTANCE_THRESHOLD = 75;
+    private INDArray makeInput(){
+        ArrayList<Enemy> enemies = model.getEnemies();
+        double[] ppos = model.getPlayerPosition();
+        double[][] clear = new double[1][6];
+        for(int i = 0; i < enemies.size(); i++){
+            double[] epos = enemies.get(i).getPosition();
+            double ewidth = enemies.get(i).getWidth();
+            double distance = getDistance(epos, ewidth, ppos);
+            if(distance < DISTANCE_THRESHOLD) {
+                if (epos[1] > ppos[1]) {
+                    clear[0][_DOWN] = 1;
+                } else {
+                    clear[0][_UP] = 1;
+                }
+                if (epos[0] > ppos[0]) {
+                    clear[0][_LEFT] = 1;
+                } else {
+                    clear[0][_RIGHT] = 1;
+                }
+            }
+        }
+        clear[0][4] = (ppos[0] + ppos[2] / 2)/Constants.WORLD_WIDTH;
+        clear[0][5] = (ppos[1] + ppos[2] / 2)/Constants.WORLD_HEIGHT;
+        INDArray features = Nd4j.createFromArray(clear);
+        return features;
+    }
 
     private double getDistance(double[] epos, double ewidth, double[] ppos) {
-        ppos[0] = ppos[0] + ppos[2] / 2;
-        ppos[1] = ppos[1] + ppos[2] / 2;
-        epos[0] = epos[0] + ewidth / 2;
-        epos[1] = epos[1] + ewidth / 2;
+        ppos = new double[]{ppos[0] + ppos[2] / 2,
+                ppos[1] + ppos[2] / 2,
+                ppos[2]};
+        epos = new double[]{epos[0] + ewidth / 2,
+                epos[1] + ewidth / 2,
+                };
         return Math.sqrt(Math.pow(ppos[0] - epos[0],2) + Math.pow(ppos[1] - epos[1],2));
     }
 
-    private INDArray makeInput() {
-        ArrayList<Enemy> enemies = model.getEnemies();
-        double[] ppos = model.getPlayerPosition();
-        double[][] pos = new double[1][enemies.size() * N_VAR_PER + 2];
-        for(int i = 0; i < enemies.size() * N_VAR_PER; i+=N_VAR_PER){
-            double[] epos = enemies.get(i/N_VAR_PER).getPosition();
-            pos[0][i] =   (epos[0] + enemies.get(i/N_VAR_PER).getWidth()/N_VAR_PER) - ppos[0];
-            pos[0][i+1] = (epos[1] + enemies.get(i/N_VAR_PER).getWidth()/N_VAR_PER) - ppos[1];
-            pos[0][i+2] = enemies.get(i/N_VAR_PER).getWidth();
-            pos[0][i+3] = epos[0];
-            pos[0][i+4] = epos[1];
-        }
-        pos[0][enemies.size() * N_VAR_PER] = ppos[0];
-        pos[0][enemies.size() * N_VAR_PER + 1] = ppos[1];
+    //private INDArray makeInput() {
+    //    ArrayList<Enemy> enemies = model.getEnemies();
+    //    double[] ppos = model.getPlayerPosition();
+    //    double[][] pos = new double[1][enemies.size() * N_VAR_PER + 2];
+    //    for(int i = 0; i < enemies.size() * N_VAR_PER; i+=N_VAR_PER){
+    //        double[] epos = enemies.get(i/N_VAR_PER).getPosition();
+    //        pos[0][i] =   (epos[0] + enemies.get(i/N_VAR_PER).getWidth()/N_VAR_PER) - ppos[0];
+    //        pos[0][i+1] = (epos[1] + enemies.get(i/N_VAR_PER).getWidth()/N_VAR_PER) - ppos[1];
+    //        pos[0][i+2] = enemies.get(i/N_VAR_PER).getWidth();
+    //        pos[0][i+3] = epos[0];
+    //        pos[0][i+4] = epos[1];
+    //    }
+    //    pos[0][enemies.size() * N_VAR_PER] = ppos[0];
+    //    pos[0][enemies.size() * N_VAR_PER + 1] = ppos[1];
 
-        double sum = 0;
-        for(int i = 0; i < enemies.size() * N_VAR_PER + 2; i++){
-            sum+=Math.pow(pos[0][i],2);
-        }
-        double scaler = Math.sqrt(sum);
-        for(int i = 0; i < enemies.size() * N_VAR_PER + 2; i++){
-            pos[0][i] = pos[0][i] / scaler ;
-        }
-        INDArray features = Nd4j.createFromArray(pos);
-        return features;
-    }
+    //    double sum = 0;
+    //    for(int i = 0; i < enemies.size() * N_VAR_PER + 2; i++){
+    //        sum+=Math.pow(pos[0][i],2);
+    //    }
+    //    double scaler = Math.sqrt(sum);
+    //    for(int i = 0; i < enemies.size() * N_VAR_PER + 2; i++){
+    //        pos[0][i] = pos[0][i] / scaler ;
+    //    }
+    //    INDArray features = Nd4j.createFromArray(pos);
+    //    return features;
+    //}
     public int N_PER_GEN = 100;
     private double N_CHILD_PER_GEN = .75;
     double MUTATE_CHANCE = .1;
     private int N_KEEP_PER_GEN = (int)(N_PER_GEN * .1);
-    public void mutate(){
+
+    public void mutate(int gennum){
         ArrayList<MultiLayerNetwork> topNetworks = new ArrayList<>();
+        System.out.println("\rGeneration " + gennum + " average: " + getAvgScore());
+        System.out.print("\rGeneartion " + gennum + " top scores: ");
         for(int j = 0; j < N_KEEP_PER_GEN; j++){
             int maxIndex = 0;
             for(int i = 0; i < networkList.size(); i++){
@@ -256,10 +272,12 @@ public class AIInputHandler extends InputHandler{
                 }
             }
             topNetworks.add(networkList.get(maxIndex));
+            System.out.print(scoreList.get(maxIndex) + " ");
             scoreList.remove(maxIndex);
             networkList.remove(maxIndex);
         }
-        System.out.println(topNetworks.size());
+        System.out.println();
+
         scoreList.clear();
         networkList.clear();
         for(MultiLayerNetwork l : topNetworks){
@@ -295,7 +313,6 @@ public class AIInputHandler extends InputHandler{
                 //System.out.println(Arrays.toString(values.shape()));//print shape of INDArray
                 //System.out.println(values);
                 if(Math.random() < MUTATE_CHANCE) {
-                    System.out.println("mutate");
                     cnet.setParam(key, Nd4j.rand(values.shape()));//set some random values
                 }
             }
@@ -303,6 +320,14 @@ public class AIInputHandler extends InputHandler{
         }
 
 
+    }
+
+    private double getAvgScore() {
+        double total = 0;
+        for(int i  = 0; i < networkList.size(); i++){
+            total+=scoreList.get(i);
+        }
+        return total / networkList.size();
     }
 
     public void setDmodel(int i) {

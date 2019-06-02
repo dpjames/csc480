@@ -76,4 +76,11 @@ public class Player extends GameObject{
     public double[] getPosition() {
         return new double[]{px, py, width};
     }
+    @Override
+    public void render(Graphics g){
+        g.setColor(this.color);
+        g.fillRect((int)px,(int)py,width,height);
+        //g.fillOval((int)(this.px + width/2 - 250/2), (int)(this.py + width/2 -250/2),250,250);
+
+    }
 }
