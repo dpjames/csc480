@@ -29,9 +29,11 @@ public class Controller {
     public void gameLoop(){
         long after;
         long deltaT = 0;
+        int generationNumber = 0;
         while(true) {
+            generationNumber++;
             for(int i = 0; i < inputhandle.N_PER_GEN; i++) {
-                System.out.println(i);
+                System.out.println(generationNumber + "." + i);
                 model.reset();
                 inputhandle.setDmodel(i);
                 while (model.isRunning()) {

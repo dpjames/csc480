@@ -38,16 +38,20 @@ public class Player extends GameObject{
        if(this.px < -1 * this.width){
            this.px = 0;
            this.px = Constants.WORLD_WIDTH;
+           hit();
        } else if(this.px > Constants.WORLD_WIDTH){
            this.px = Constants.WORLD_WIDTH - this.width;
            this.px = -1 * this.width;
+           hit();
        }
        if(this.py < -1 * this.width){
            this.py = 0;
            this.py = Constants.WORLD_HEIGHT;
+           hit();
        } else if(this.py > Constants.WORLD_HEIGHT){
            this.py = Constants.WORLD_HEIGHT - this.height;
            this.py = -1 * this.height;
+           hit();
        }
 
         //check if collision
@@ -70,6 +74,6 @@ public class Player extends GameObject{
     }
 
     public double[] getPosition() {
-        return new double[]{px, py};
+        return new double[]{px, py, width};
     }
 }
