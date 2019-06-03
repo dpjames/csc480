@@ -51,7 +51,7 @@ public class View {
                 for (GameObject o : model.getGameObjects()) {
                     o.render(g);
                 }
-            } catch (ConcurrentModificationException e){
+            } catch (Exception e){
                 //yeah ignore this
             }
             g.setFont(new Font("Verdana", Font.BOLD, 30));

@@ -191,7 +191,7 @@ public class AIInputHandler extends InputHandler{
         //float y = down - up;
         //movePlayer(VELOCITY * x, VELOCITY * y);
     }
-    private double DISTANCE_THRESHOLD = 75;
+    private double DISTANCE_THRESHOLD = 100;
     private INDArray makeInput(){
         ArrayList<Enemy> enemies = model.getEnemies();
         double[] ppos = model.getPlayerPosition();
@@ -255,7 +255,7 @@ public class AIInputHandler extends InputHandler{
     //    INDArray features = Nd4j.createFromArray(pos);
     //    return features;
     //}
-    public int N_PER_GEN = 100;
+    public int N_PER_GEN = 250;
     private double N_CHILD_PER_GEN = .75;
     double MUTATE_CHANCE = .1;
     private int N_KEEP_PER_GEN = (int)(N_PER_GEN * .1);
@@ -263,7 +263,10 @@ public class AIInputHandler extends InputHandler{
     public void mutate(int gennum){
         ArrayList<MultiLayerNetwork> topNetworks = new ArrayList<>();
         System.out.println("\rGeneration " + gennum + " average: " + getAvgScore());
-        System.out.print("\rGeneartion " + gennum + " top scores: ");
+        for(int i = 0 ; i < scoreList.size(); i++){
+            System.out.print(Math.round(scoreList.get(i)*100.0)/100.0+",");
+        }
+        System.out.println();
         for(int j = 0; j < N_KEEP_PER_GEN; j++){
             int maxIndex = 0;
             for(int i = 0; i < networkList.size(); i++){
@@ -272,12 +275,9 @@ public class AIInputHandler extends InputHandler{
                 }
             }
             topNetworks.add(networkList.get(maxIndex));
-            System.out.print(scoreList.get(maxIndex) + " ");
             scoreList.remove(maxIndex);
             networkList.remove(maxIndex);
         }
-        System.out.println();
-
         scoreList.clear();
         networkList.clear();
         for(MultiLayerNetwork l : topNetworks){
