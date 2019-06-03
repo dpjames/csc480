@@ -94,6 +94,13 @@ public class AIInputHandler extends InputHandler{
             }
         }
     };
+    private static final String WALLS = "WALLS";
+    private Action walls = new AbstractAction() {
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            Constants.WALL_KILL = !Constants.WALL_KILL;
+        }
+    };
     public AIInputHandler(JPanel canvas, Model m){
         System.out.println("init action maps");
         canvas.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_A,0), LEFT);
@@ -119,6 +126,8 @@ public class AIInputHandler extends InputHandler{
         canvas.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_R,0), SWAP);
         canvas.getActionMap().put(SWAP,swap);
 
+        canvas.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW).put(KeyStroke.getKeyStroke(KeyEvent.VK_L,0), WALLS);
+        canvas.getActionMap().put(WALLS,walls);
 
         this.model = m;
         initDmod();
@@ -255,7 +264,7 @@ public class AIInputHandler extends InputHandler{
     //    INDArray features = Nd4j.createFromArray(pos);
     //    return features;
     //}
-    public int N_PER_GEN = 250;
+    public int N_PER_GEN = 100;
     private double N_CHILD_PER_GEN = .75;
     double MUTATE_CHANCE = .1;
     private int N_KEEP_PER_GEN = (int)(N_PER_GEN * .1);

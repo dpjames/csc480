@@ -6,7 +6,7 @@ public class Enemy extends GameObject {
     static int globWidth = 10;
     static int globHeight = 10;
     static Player player;
-    private static double speedmod = 3;
+    private static double speedmod = .5;
     public Enemy(){
         super();
         this.regen();
@@ -19,7 +19,7 @@ public class Enemy extends GameObject {
     }
 
     public static void reset() {
-        speedmod = 2;
+        speedmod = 8;
         //globHeight = 10;
         //globWidth = 10;
     }
