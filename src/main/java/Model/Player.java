@@ -12,7 +12,7 @@ public class Player extends GameObject{
         this.height = 10;
         this.px = Constants.WORLD_WIDTH/2 - width/2;
         this.py = Constants.WORLD_HEIGHT/2 - height/2;
-        this.color = Color.YELLOW;
+        this.color = Color.white;
         this.gameObs = gameObs;
     }
     public void hit(){
@@ -88,7 +88,6 @@ public class Player extends GameObject{
     public void render(Graphics g){
         g.setColor(this.color);
         g.fillRect((int)px,(int)py,width,height);
-        //g.fillOval((int)(this.px + width/2 - 250/2), (int)(this.py + width/2 -250/2),250,250);
 
     }
 }

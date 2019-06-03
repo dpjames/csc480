@@ -14,6 +14,11 @@ public class GameObject {
     protected int height = 10;
     protected Color color = Color.RED;
     public GameObject(){
+        int R = (int) (Math.random() * 250);
+        int G = (int) (Math.random() * 250);
+        int B = (int) (Math.random() * 250);
+        Color randomColor = new Color(R,G,B);
+        color = randomColor;
         px = Math.random() * Constants.WORLD_WIDTH + Constants.WORLD_WIDTH;
         py = Math.random() * Constants.WORLD_HEIGHT - height;
     }
@@ -23,10 +28,15 @@ public class GameObject {
         vx+= deltaT * ax;
         vy+= deltaT * ay;
     }
+
     public void render(Graphics g){
-        g.setColor(this.color);
-        g.fillRect((int)px,(int)py,width,height);
+
+        g.setColor(color);
+        g.fillRect((int) px, (int) py, width, height);
+
     }
+
+
     public boolean collides(GameObject other){
         double[][] me = {
                 {this.px, this.py},
